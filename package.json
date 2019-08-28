@@ -1,0 +1,33 @@
+{
+  "name": "@feckarseindustries/facebutt",
+  "version": "0.0.0-development",
+  "homepage": "https://github.com/feckarseindustries/facebutt",
+  "bugs": "https://github.com/feckarseindustries/facebutt",
+  "repository": "github:feckarseindustries/facebutt",
+  "license": "ISC",
+  "scripts": {
+    "prepare": "tsc",
+    "test": "tslint --project . && ava"
+  },
+  "dependencies": {
+    "tslib": "1.10.0"
+  },
+  "devDependencies": {
+    "@softwareventures/tsconfig": "2.0.0",
+    "@softwareventures/tslint-rules": "0.7.1",
+    "ava": "2.3.0",
+    "semantic-release": "15.13.24",
+    "ts-node": "8.3.0",
+    "tslint": "5.19.0",
+    "typescript": "3.5.3"
+  },
+  "ava": {
+    "compileEnhancements": false,
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  }
+}
