@@ -1,6 +1,6 @@
 import {Actor, Engine, Input} from "excalibur";
-import Game from "./Game";
-import {bleat, sheepie} from "./resources";
+import Game from "../Game";
+import {bleat, sheepie} from "../resources";
 
 export class Sheepie extends Actor {
     constructor(game: Game) {
