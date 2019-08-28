@@ -1,4 +1,5 @@
-import {DisplayMode, Engine, Loader} from "excalibur";
+import {DisplayMode, Engine} from "excalibur";
+import {loader} from "./resources";
 
 export default class Game {
     public readonly width = 480;
@@ -16,8 +17,6 @@ export default class Game {
     }
 
     public start(): void {
-        const loader = new Loader();
-
         this.engine.start(loader)
             .error(reason => console.error(reason));
     }
