@@ -1,6 +1,6 @@
 import {Loader, Sound, Texture} from "excalibur";
-import sheepiePng from "./sheepie.png";
 import jodieBaaaMp3 from "./jodieBaaa.mp3";
+import sheepiePng from "./sheepie.png";
 
 export const loader = new Loader();
 
