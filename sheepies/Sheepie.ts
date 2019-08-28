@@ -12,7 +12,8 @@ export class Sheepie extends Actor {
             width: 30,
             height: 30
         });
-        this.addDrawing(sheepie);
+        this.addDrawing("right", sheepie.right.asSprite());
+        this.addDrawing("left", sheepie.left.asSprite());
     }
 
     public update(engine: Engine, delta: number): void {
@@ -25,12 +26,12 @@ export class Sheepie extends Actor {
         }
 
         if (engine.input.keyboard.isHeld(Input.Keys.Left)) {
-            sheepie.asSprite().flipHorizontal = true;
+            this.setDrawing("left");
             this.x -= speed * delta;
         }
 
         if (engine.input.keyboard.isHeld(Input.Keys.Right)) {
-            sheepie.asSprite().flipHorizontal = false;
+            this.setDrawing("right");
             this.x += speed * delta;
         }
 
