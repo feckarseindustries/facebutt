@@ -1,4 +1,5 @@
 import {DisplayMode, Engine} from "excalibur";
+import Level1 from "./Level1";
 import {loader} from "./resources";
 
 export default class Game {
@@ -18,6 +19,9 @@ export default class Game {
 
     public start(): void {
         this.engine.start(loader)
+            .then(() => {
+                this.engine.add("level1", new Level1(this));
+            })
             .error(reason => console.error(reason));
     }
 }
