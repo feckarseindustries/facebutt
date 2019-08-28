@@ -21,6 +21,7 @@ export default class Game {
         this.engine.start(loader)
             .then(() => {
                 this.engine.add("level1", new Level1(this));
+                this.engine.goToScene("level1");
             })
             .error(reason => console.error(reason));
     }
