@@ -2,6 +2,8 @@ import {Actor, Engine, Input} from "excalibur";
 import Game from "../Game";
 import {bleat, sheepie} from "../resources";
 
+const speed = 5 * 60 / 1000;
+
 export class Sheepie extends Actor {
     constructor(game: Game) {
         super({
@@ -20,6 +22,24 @@ export class Sheepie extends Actor {
                 bleat.stop();
             }
             bleat.play();
+        }
+
+        if (engine.input.keyboard.isHeld(Input.Keys.Left)) {
+            sheepie.asSprite().flipHorizontal = true;
+            this.x -= speed * delta;
+        }
+
+        if (engine.input.keyboard.isHeld(Input.Keys.Right)) {
+            sheepie.asSprite().flipHorizontal = false;
+            this.x += speed * delta;
+        }
+
+        if (engine.input.keyboard.isHeld(Input.Keys.Up)) {
+            this.y -= speed * delta;
+        }
+
+        if (engine.input.keyboard.isHeld(Input.Keys.Down)) {
+            this.y += speed * delta;
         }
     }
 }
