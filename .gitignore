@@ -4,6 +4,7 @@
 yarn-error.log
 npm-debug.log
 *.js
+!/webpack.config.js
 *.d.ts
 !/types/*.d.ts
 *.js.map
