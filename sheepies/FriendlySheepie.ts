@@ -1,48 +1,86 @@
-import {Actor, Engine, Input, Vector} from "excalibur";
+import {Actor, Engine, Vector} from "excalibur";
 import Game from "../Game";
-import {rainbowSheepies, sheepie} from "../resources";
+import {RainbowSheepieType} from "../resources";
 import {Sheepie} from "./Sheepie";
 
-const maxSpeed = 6 * 60 / 1000;
-const rushDistance = 300;
-
 export class FriendlySheepie extends Actor {
-    private readonly followTarget: Sheepie;
-    private readonly relativeX: number; // in radians
-    private readonly relativeY: number;
 
-    constructor(game: Game, followTarget: Actor) {
+    private static figureOutSpeed(distanceFromTarget: number, maxSpeed: number): number {
+        const rushDistance = maxSpeed * 200;
+        // speed is at max over the rush distance, otherwise it's at a proportion of the distance from target
+        if (distanceFromTarget > rushDistance) {
+            return maxSpeed;
+        }
+        return distanceFromTarget * ((1 / rushDistance) * maxSpeed);
+    }
+    private readonly followTarget: Sheepie;
+    private readonly followTargetRelativePosition: Vector;
+    private readonly sheepieType: RainbowSheepieType;
+    private readonly maxSpeed: number;
+
+    private shouldFollowSheepie: boolean = false;
+
+    constructor(game: Game, followTarget: Sheepie, sheepieType: RainbowSheepieType) {
         super({
-            x: game.width * 0.5,
-            y: game.height * 0.5,
+            x: game.width * Math.random(),
+            y: game.height * Math.random(),
             width: 30,
             height: 30
         });
-        const randomColour = rainbowSheepies[Math.floor(Math.random() * rainbowSheepies.length)];
-        this.addDrawing("left", randomColour.left.asSprite());
-        this.addDrawing("right", randomColour.right.asSprite());
+        this.sheepieType = sheepieType;
+
+        // Randomise speed slightly so they don't move too uniformly
+        this.maxSpeed = sheepieType.baseSpeed * ((1 + Math.random()) / 2);
+        console.log(this.maxSpeed);
+        this.addDrawing("left", this.sheepieType.left.asSprite());
+        this.addDrawing("right", this.sheepieType.right.asSprite());
         this.followTarget = followTarget;
 
         // Have a target location around the follow target that is distributed in a circle
         const angleRelativeToTarget = Math.random() * 2 * Math.PI;
         const distance = Math.random() * 80;
-        this.relativeX = Math.sin(angleRelativeToTarget) * distance;
-        this.relativeY = Math.cos(angleRelativeToTarget) * distance;
+        this.followTargetRelativePosition = Vector.fromAngle(angleRelativeToTarget).scaleEqual(distance);
     }
 
     public update(engine: Engine, delta: number): void {
+        if (this.shouldFollowSheepie) {
+            this.followSheepie(engine, delta);
+        } else {
+            this.peepoSheepie(engine, delta);
+        }
+    }
+
+    // later go in an arc
+    private peepoSheepie(engine: Engine, delta: number): void {
+        // Sit around waiting for a bleat
+        if (this.followTarget.bleatedAt(this.pos)) {
+            this.shouldFollowSheepie = true;
+        }
+    }
+
+    private followSheepie(engine: Engine, delta: number): void {
         // Follow primary sheepie
-        const homeX = this.followTarget.x + this.relativeX;
-        const homeY = this.followTarget.y + this.relativeY;
+        const targetSpot = this.followTarget.pos.add(this.followTargetRelativePosition);
+
+        if (targetSpot.equals(this.pos)) {
+            // On target, no need to move at all
+            return;
+        }
 
         // Slow down as we get closer
-        const dx = homeX - this.x;
-        const dy = homeY - this.y;
-        const distanceFromTarget = Math.sqrt(dx ^ 2 + dy ^ 2);
+        const distanceFromTarget = this.pos.distance(targetSpot);
+        const speed = FriendlySheepie.figureOutSpeed(distanceFromTarget, this.maxSpeed);
+        const vector = targetSpot.sub(this.pos).normalize().scale(speed * delta);
+        this.addNewVector(vector);
+    }
 
-        const speed = maxSpeed;
-
-        const vector = new Vector(dx, dy).normalize().scale(speed * delta);
+    private addNewVector(vector: Vector): void {
+        if (vector.x > 0) {
+            // Heading right
+            this.setDrawing("right");
+        } else {
+            this.setDrawing("left");
+        }
         this.pos = this.pos.add(vector);
     }
 }
