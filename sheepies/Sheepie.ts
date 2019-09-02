@@ -3,8 +3,7 @@ import Game from "../Game";
 import {bleat, sheepie} from "../resources";
 
 export class Sheepie extends Actor {
-
-    private readonly speed: number;
+    private readonly speed: number = 5 * 60 / 1000;
     private readonly gameHeight: number;
     private readonly gameWidth: number;
     private bleatDistance: number = 50;
@@ -18,13 +17,33 @@ export class Sheepie extends Actor {
         });
         this.gameHeight = game.height;
         this.gameWidth = game.width;
-        this.speed = sheepie.baseSpeed;
         this.addDrawing("right", sheepie.right.asSprite());
         this.addDrawing("left", sheepie.left.asSprite());
     }
 
     public bleatedAt(bleateePostion: Vector): boolean {
         return bleat.isPlaying() && this.pos.distance(bleateePostion) <= this.bleatDistance;
+    }
+
+    public draw(ctx: CanvasRenderingContext2D, delta: number): void {
+        super.draw(ctx, delta); // perform base drawing logic
+
+        const box = this.body.collider.bounds;
+        // custom drawing
+        box.getPoints().forEach((v, i, arr) => {
+            const previous = (i === 0) ? arr[arr.length - 1] : arr[i - 1];
+            ctx.beginPath();
+            ctx.moveTo(previous.x, previous.y);
+            ctx.lineTo(v.x, v.y);
+            ctx.stroke();
+        });
+
+        if (bleat.isPlaying()) {
+            // Draw a circle out from the sheepie to bleat distance
+            ctx.beginPath();
+            ctx.arc(this.pos.x, this.pos.y, this.bleatDistance, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
     }
 
     public update(engine: Engine, delta: number): void {

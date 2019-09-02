@@ -1,7 +1,7 @@
 import {Scene} from "excalibur";
 import Game from "./Game";
-import {rainbowSheepies} from "./resources";
 import {FriendlySheepie} from "./sheepies/FriendlySheepie";
+import {red} from "./sheepies/FriendlySheepieType";
 import {Sheepie} from "./sheepies/Sheepie";
 
 export default class Level1 extends Scene {
@@ -19,6 +19,6 @@ export default class Level1 extends Scene {
     }
 
     private spawnSheep(): FriendlySheepie {
-        return new FriendlySheepie(this.game, this.protagonist, rainbowSheepies[0]);
+        return new FriendlySheepie(this.game, this.protagonist, red);
     }
 }

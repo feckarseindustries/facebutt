@@ -1,6 +1,6 @@
 import {Actor, Engine, Vector} from "excalibur";
 import Game from "../Game";
-import {RainbowSheepieType} from "../resources";
+import {RainbowSheepieType} from "./FriendlySheepieType";
 import {Sheepie} from "./Sheepie";
 
 export class FriendlySheepie extends Actor {
@@ -32,14 +32,28 @@ export class FriendlySheepie extends Actor {
         // Randomise speed slightly so they don't move too uniformly
         this.maxSpeed = sheepieType.baseSpeed * ((1 + Math.random()) / 2);
         console.log(this.maxSpeed);
-        this.addDrawing("left", this.sheepieType.left.asSprite());
-        this.addDrawing("right", this.sheepieType.right.asSprite());
+        this.addDrawing("left", this.sheepieType.images.left.asSprite());
+        this.addDrawing("right", this.sheepieType.images.right.asSprite());
         this.followTarget = followTarget;
 
         // Have a target location around the follow target that is distributed in a circle
         const angleRelativeToTarget = Math.random() * 2 * Math.PI;
         const distance = Math.random() * 80;
         this.followTargetRelativePosition = Vector.fromAngle(angleRelativeToTarget).scaleEqual(distance);
+    }
+
+    public draw(ctx: CanvasRenderingContext2D, delta: number): void {
+        super.draw(ctx, delta); // perform base drawing logic
+
+        const box = this.body.collider.bounds;
+        // custom drawing
+        box.getPoints().forEach((v, i, arr) => {
+            const previous = (i === 0) ? arr[arr.length - 1] : arr[i - 1];
+            ctx.beginPath();
+            ctx.moveTo(previous.x, previous.y);
+            ctx.lineTo(v.x, v.y);
+            ctx.stroke();
+        });
     }
 
     public update(engine: Engine, delta: number): void {

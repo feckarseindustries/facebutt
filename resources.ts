@@ -10,62 +10,46 @@ import sheepiePng from "./sheepies/sheepie.png";
 
 export const loader = new Loader();
 
-const leftFlipper = (s: (RainbowSheepieType)) => s.left.asSprite().flipHorizontal = true;
-const loadifier = (s: (RainbowSheepieType)) => {
-    loader.addResource(s.left);
-    loader.addResource(s.right);
-};
-export const sheepie = {
-    name: "Sheepie",
-    baseSpeed: 5 * 60 / 1000,
+export interface LeftAndRightTexturePair {
+    left: Texture;
+    right: Texture;
+}
+
+export const sheepie: LeftAndRightTexturePair = {
     left: new Texture(sheepiePng),
     right: new Texture(sheepiePng)
 };
-leftFlipper(sheepie);
-loadifier(sheepie);
+export const redSheepie: LeftAndRightTexturePair = {
+    left: new Texture(sheepieRed),
+    right: new Texture(sheepieRed)
+};
+export const orangeSheepie: LeftAndRightTexturePair = {
+    left: new Texture(sheepieOrange),
+    right: new Texture(sheepieOrange)
+};
+export const yellowSheepie: LeftAndRightTexturePair = {
+    left: new Texture(sheepieYellow),
+    right: new Texture(sheepieYellow)
+};
+export const greenSheepie: LeftAndRightTexturePair = {
+    left: new Texture(sheepieGreen),
+    right: new Texture(sheepieGreen)
+};
+export const blueSheepie: LeftAndRightTexturePair = {
+    left: new Texture(sheepieBlue),
+    right: new Texture(sheepieBlue)
+};
+export const purpleSheepie: LeftAndRightTexturePair = {
+    left: new Texture(sheepiePurple),
+    right: new Texture(sheepiePurple)
+};
 
-export interface RainbowSheepieType {
-    left: Texture;
-    right: Texture;
-    name: string;
-    baseSpeed: number;
-}
-
-export const rainbowSheepies = [
-    {
-        name: "Red",
-        baseSpeed: 6 * 60 / 1000,
-        left: new Texture(sheepieRed),
-        right: new Texture(sheepieRed)
-    }, {
-        name: "Orange",
-        baseSpeed: 6.5 * 60 / 1000,
-        left: new Texture(sheepieOrange),
-        right: new Texture(sheepieOrange)
-    }, {
-        name: "Yellow",
-        baseSpeed: 7 * 60 / 1000,
-        left: new Texture(sheepieYellow),
-        right: new Texture(sheepieYellow)
-    }, {
-        name: "Green",
-        baseSpeed: 7.5 * 60 / 1000,
-        left: new Texture(sheepieGreen),
-        right: new Texture(sheepieGreen)
-    }, {
-        name: "Blue",
-        baseSpeed: 8 * 60 / 1000,
-        left: new Texture(sheepieBlue),
-        right: new Texture(sheepieBlue)
-    }, {
-        name: "Purp",
-        baseSpeed: 8.5 * 60 / 1000,
-        left: new Texture(sheepiePurple),
-        right: new Texture(sheepiePurple)
-    }
-];
-rainbowSheepies.forEach(leftFlipper);
-rainbowSheepies.forEach(loadifier);
+// Flip the left image so it's facing left, and load into the game
+[sheepie, redSheepie, orangeSheepie, yellowSheepie, greenSheepie, blueSheepie, purpleSheepie].forEach(s => {
+    s.left.asSprite().flipHorizontal = true;
+    loader.addResource(s.left);
+    loader.addResource(s.right);
+});
 
 export const bleat = new Sound(jodieBaaaMp3);
 loader.addResource(bleat);
