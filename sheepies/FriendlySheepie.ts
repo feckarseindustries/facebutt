@@ -1,6 +1,7 @@
 import {Actor, Engine, Vector} from "excalibur";
 import Game from "../Game";
 import {RainbowSheepieType} from "./FriendlySheepieType";
+import {MovementStyle} from "./movement/MovementStyle";
 import {Sheepie} from "./Sheepie";
 
 export class FriendlySheepie extends Actor {
@@ -19,11 +20,10 @@ export class FriendlySheepie extends Actor {
     private readonly maxSpeed: number;
 
     private shouldFollowSheepie: boolean = false;
+    private readonly movementStyle: MovementStyle;
 
     constructor(game: Game, followTarget: Sheepie, sheepieType: RainbowSheepieType) {
         super({
-            x: game.width * Math.random(),
-            y: game.height * Math.random(),
             width: 30,
             height: 30
         });
@@ -35,6 +35,9 @@ export class FriendlySheepie extends Actor {
         this.addDrawing("left", this.sheepieType.images.left.asSprite());
         this.addDrawing("right", this.sheepieType.images.right.asSprite());
         this.followTarget = followTarget;
+        this.movementStyle = sheepieType.getMovement(this.maxSpeed, game.height, game.width);
+
+        this.pos = this.movementStyle.startingPosition();
 
         // Have a target location around the follow target that is distributed in a circle
         const angleRelativeToTarget = Math.random() * 2 * Math.PI;
@@ -70,6 +73,8 @@ export class FriendlySheepie extends Actor {
         if (this.followTarget.bleatedAt(this.pos)) {
             this.shouldFollowSheepie = true;
         }
+
+        this.pos = this.pos.add(this.movementStyle.nextPositionToAdd(this, engine, delta, this.followTarget));
     }
 
     private followSheepie(engine: Engine, delta: number): void {
